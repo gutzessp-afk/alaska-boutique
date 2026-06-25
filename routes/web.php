@@ -10,10 +10,14 @@ Route::get('/tienda', function () {
     return view('tienda');
 })->name('tienda');
 
-Route::get('/login', function () {
-    return view('auth.login');
-})->name('login');
+Route::get('/dashboard', function () {
+    return view('dashboard');
+})->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::get('/register', function () {
-    return view('auth.register');
-})->name('register');
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [\App\Http\Controllers\ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [\App\Http\Controllers\ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [\App\Http\Controllers\ProfileController::class, 'destroy'])->name('profile.destroy');
+});
+
+require __DIR__.'/auth.php';

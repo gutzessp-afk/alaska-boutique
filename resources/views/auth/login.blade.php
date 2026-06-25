@@ -3,7 +3,6 @@
                 bg-gradient-to-b from-[#F8F6F1] to-[#ECEFF4]">
         <div class="w-full max-w-md">
 
-            {{-- Logo --}}
             <a href="{{ route('welcome') }}" class="block text-center mb-8">
                 <svg viewBox="0 0 200 40" class="w-28 mx-auto mb-2" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M30 30 L100 8 L170 30" stroke="#C9DCEC" stroke-width="3" stroke-linecap="round" fill="none"/>
@@ -15,21 +14,29 @@
                 <h2 class="font-display text-2xl text-[#1B2A4A] mb-1">Bienvenida de nuevo</h2>
                 <p class="text-sm text-[#5B6478] mb-8">Inicia sesión para continuar.</p>
 
+                @if (session('status'))
+                    <div class="mb-6 px-4 py-3 rounded-lg bg-green-50 border border-green-200 text-sm text-green-700">
+                        {{ session('status') }}
+                    </div>
+                @endif
+
                 <form method="POST" action="{{ route('login') }}" class="space-y-5">
                     @csrf
 
                     <div>
                         <label for="email" class="block text-xs font-medium uppercase tracking-wider text-[#5B6478] mb-2">Correo electrónico</label>
-                        <input id="email" name="email" type="email" required autofocus
+                        <input id="email" name="email" type="email" value="{{ old('email') }}" required autofocus autocomplete="username"
                                class="w-full px-4 py-3 rounded-lg border border-[#E2E0DA] bg-[#FBFAF7]
                                       focus:border-[#B89B6A] focus:ring-2 focus:ring-[#C9DCEC] focus:outline-none transition">
+                        @error('email')<p class="mt-1 text-xs text-red-500">{{ $message }}</p>@enderror
                     </div>
 
                     <div>
                         <label for="password" class="block text-xs font-medium uppercase tracking-wider text-[#5B6478] mb-2">Contraseña</label>
-                        <input id="password" name="password" type="password" required
+                        <input id="password" name="password" type="password" required autocomplete="current-password"
                                class="w-full px-4 py-3 rounded-lg border border-[#E2E0DA] bg-[#FBFAF7]
                                       focus:border-[#B89B6A] focus:ring-2 focus:ring-[#C9DCEC] focus:outline-none transition">
+                        @error('password')<p class="mt-1 text-xs text-red-500">{{ $message }}</p>@enderror
                     </div>
 
                     <div class="flex items-center justify-between">
@@ -37,7 +44,9 @@
                             <input type="checkbox" name="remember" class="rounded border-[#E2E0DA] text-[#1B2A4A] focus:ring-[#C9DCEC]">
                             Recordarme
                         </label>
-                        <a href="#" class="text-sm text-[#B89B6A] hover:underline underline-offset-4">¿Olvidaste tu contraseña?</a>
+                        @if (Route::has('password.request'))
+                            <a href="{{ route('password.request') }}" class="text-sm text-[#B89B6A] hover:underline underline-offset-4">¿Olvidaste tu contraseña?</a>
+                        @endif
                     </div>
 
                     <button type="submit"
@@ -53,4 +62,4 @@
             </p>
         </div>
     </div>
-</x-guest-layout>
+</x-guest-layout>   

@@ -7,33 +7,59 @@ use App\Models\User;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\Rules;
-use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
+use Illuminate\Validation\Rules\Password;
 
 class RegisteredUserController extends Controller
 {
-    /**
-     * Display the registration view.
-     */
     public function create(): View
     {
         return view('auth.register');
     }
 
-    /**
-     * Handle an incoming registration request.
-     *
-     * @throws ValidationException
-     */
     public function store(Request $request): RedirectResponse
     {
         $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'name' => [
+                'required',
+                'string',
+                'min:3',
+                'max:255',
+                'regex:/^[\pL\s]+$/u', // solo letras y espacios (sin números ni símbolos)
+            ],
+            'email' => [
+                'required',
+                'string',
+                'lowercase',
+                'email:rfc,dns', // valida que el correo tenga formato real
+                'max:255',
+                'unique:users,email', // que no exista ya
+            ],
+            'password' => [
+                'required',
+                'confirmed', // debe coincidir con la confirmación
+                Password::min(8)        // mínimo 8 caracteres
+                    ->mixedCase()       // mayúscula y minúscula
+                    ->numbers()         // al menos un número
+                    ->symbols(),        // al menos un símbolo
+            ],
+        ], [
+            // Mensajes personalizados en español
+            'name.required'   => 'El nombre es obligatorio.',
+            'name.min'        => 'El nombre debe tener al menos 3 caracteres.',
+            'name.regex'      => 'El nombre solo puede contener letras y espacios.',
+
+            'email.required'  => 'El correo es obligatorio.',
+            'email.email'     => 'Ingresa un correo electrónico válido.',
+            'email.unique'    => 'Ese correo ya está registrado.',
+
+            'password.required'  => 'La contraseña es obligatoria.',
+            'password.confirmed' => 'Las contraseñas no coinciden.',
+            'password.min'       => 'La contraseña debe tener al menos 8 caracteres.',
+            'password.mixed'     => 'La contraseña debe incluir mayúsculas y minúsculas.',
+            'password.numbers'   => 'La contraseña debe incluir al menos un número.',
+            'password.symbols'   => 'La contraseña debe incluir al menos un símbolo (ej. @, #, $).',
         ]);
 
         $user = User::create([
@@ -44,8 +70,6 @@ class RegisteredUserController extends Controller
 
         event(new Registered($user));
 
-        Auth::login($user);
-
-        return redirect(route('dashboard', absolute: false));
+        return redirect()->route('login')->with('status', '¡Cuenta creada con éxito! Ahora inicia sesión.');
     }
 }

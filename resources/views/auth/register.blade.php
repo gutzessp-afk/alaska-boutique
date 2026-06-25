@@ -3,7 +3,6 @@
                 bg-gradient-to-b from-[#F8F6F1] to-[#ECEFF4]">
         <div class="w-full max-w-md">
 
-            {{-- Logo --}}
             <a href="{{ route('welcome') }}" class="block text-center mb-8">
                 <svg viewBox="0 0 200 40" class="w-28 mx-auto mb-2" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M30 30 L100 8 L170 30" stroke="#C9DCEC" stroke-width="3" stroke-linecap="round" fill="none"/>
@@ -20,28 +19,32 @@
 
                     <div>
                         <label for="name" class="block text-xs font-medium uppercase tracking-wider text-[#5B6478] mb-2">Nombre completo</label>
-                        <input id="name" name="name" type="text" required autofocus
-                               class="w-full px-4 py-3 rounded-lg border border-[#E2E0DA] bg-[#FBFAF7]
-                                      focus:border-[#B89B6A] focus:ring-2 focus:ring-[#C9DCEC] focus:outline-none transition">
+                        <input id="name" name="name" type="text" value="{{ old('name') }}" required autofocus autocomplete="name"
+                               class="w-full px-4 py-3 rounded-lg border bg-[#FBFAF7] focus:ring-2 focus:ring-[#C9DCEC] focus:outline-none transition
+                                      @error('name') border-red-400 @else border-[#E2E0DA] focus:border-[#B89B6A] @enderror">
+                        @error('name')<p class="mt-1 text-xs text-red-500">{{ $message }}</p>@enderror
                     </div>
 
                     <div>
                         <label for="email" class="block text-xs font-medium uppercase tracking-wider text-[#5B6478] mb-2">Correo electrónico</label>
-                        <input id="email" name="email" type="email" required
-                               class="w-full px-4 py-3 rounded-lg border border-[#E2E0DA] bg-[#FBFAF7]
-                                      focus:border-[#B89B6A] focus:ring-2 focus:ring-[#C9DCEC] focus:outline-none transition">
+                        <input id="email" name="email" type="email" value="{{ old('email') }}" required autocomplete="username"
+                               class="w-full px-4 py-3 rounded-lg border bg-[#FBFAF7] focus:ring-2 focus:ring-[#C9DCEC] focus:outline-none transition
+                                      @error('email') border-red-400 @else border-[#E2E0DA] focus:border-[#B89B6A] @enderror">
+                        @error('email')<p class="mt-1 text-xs text-red-500">{{ $message }}</p>@enderror
                     </div>
 
                     <div>
                         <label for="password" class="block text-xs font-medium uppercase tracking-wider text-[#5B6478] mb-2">Contraseña</label>
-                        <input id="password" name="password" type="password" required
-                               class="w-full px-4 py-3 rounded-lg border border-[#E2E0DA] bg-[#FBFAF7]
-                                      focus:border-[#B89B6A] focus:ring-2 focus:ring-[#C9DCEC] focus:outline-none transition">
+                        <input id="password" name="password" type="password" required autocomplete="new-password"
+                               class="w-full px-4 py-3 rounded-lg border bg-[#FBFAF7] focus:ring-2 focus:ring-[#C9DCEC] focus:outline-none transition
+                                      @error('password') border-red-400 @else border-[#E2E0DA] focus:border-[#B89B6A] @enderror">
+                        @error('password')<p class="mt-1 text-xs text-red-500">{{ $message }}</p>@enderror
+                        <p class="mt-1.5 text-[11px] text-[#8A8377]">Mínimo 8 caracteres, con mayúscula, minúscula, número y un símbolo.</p>
                     </div>
 
                     <div>
                         <label for="password_confirmation" class="block text-xs font-medium uppercase tracking-wider text-[#5B6478] mb-2">Confirmar contraseña</label>
-                        <input id="password_confirmation" name="password_confirmation" type="password" required
+                        <input id="password_confirmation" name="password_confirmation" type="password" required autocomplete="new-password"
                                class="w-full px-4 py-3 rounded-lg border border-[#E2E0DA] bg-[#FBFAF7]
                                       focus:border-[#B89B6A] focus:ring-2 focus:ring-[#C9DCEC] focus:outline-none transition">
                     </div>
